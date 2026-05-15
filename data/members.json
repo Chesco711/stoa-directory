@@ -1,0 +1,162 @@
+[
+  {
+    "id": "1",
+    "slug": "alex-morgan",
+    "name": "Alex Morgan",
+    "avatar": null,
+    "bio": "Building tools for async teams. Obsessed with developer experience and calm software.",
+    "location": "London, UK",
+    "social": {
+      "twitter": "alexmorgan",
+      "website": "https://alexmorgan.dev"
+    },
+    "tags": ["developer", "saas"],
+    "visibility": "public",
+    "projects": [
+      {
+        "id": "p1",
+        "title": "Slowmail",
+        "description": "An email client that batches your inbox into two daily digests so you can stay focused.",
+        "url": "https://slowmail.app",
+        "type": "saas",
+        "tags": ["productivity", "email"],
+        "visibility": "public",
+        "status": "active",
+        "thumbnail": null,
+        "seekingFeedback": true
+      },
+      {
+        "id": "p2",
+        "title": "OSS Changelog",
+        "description": "Auto-generates human-readable changelogs from your git history using AI.",
+        "url": "https://github.com/alexmorgan/oss-changelog",
+        "type": "open-source",
+        "tags": ["developer-tools", "ai"],
+        "visibility": "public",
+        "status": "shipped",
+        "thumbnail": null,
+        "seekingFeedback": false
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "slug": "priya-shah",
+    "name": "Priya Shah",
+    "avatar": null,
+    "bio": "Designer turned founder. Working on making financial tools less intimidating for first-generation investors.",
+    "location": "Toronto, CA",
+    "social": {
+      "twitter": "priyashah",
+      "linkedin": "priya-shah"
+    },
+    "tags": ["founder", "design", "fintech"],
+    "visibility": "public",
+    "projects": [
+      {
+        "id": "p3",
+        "title": "Pebble",
+        "description": "A no-jargon investing app for people who find traditional finance apps overwhelming.",
+        "url": "https://pebble.finance",
+        "type": "app",
+        "tags": ["fintech", "mobile"],
+        "visibility": "public",
+        "status": "wip",
+        "thumbnail": null,
+        "seekingFeedback": true
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "slug": "tom-reeves",
+    "name": "Tom Reeves",
+    "avatar": null,
+    "bio": "Vibe coder and part-time philosopher. Shipping weird small things to see what sticks.",
+    "location": "Berlin, DE",
+    "social": {
+      "website": "https://tomreeves.xyz"
+    },
+    "tags": ["developer", "indie"],
+    "visibility": "public",
+    "projects": [
+      {
+        "id": "p4",
+        "title": "One Question",
+        "description": "A daily journalling app that asks you exactly one question and gets out of the way.",
+        "url": "https://onequestion.app",
+        "type": "app",
+        "tags": ["wellness", "productivity"],
+        "visibility": "public",
+        "status": "active",
+        "thumbnail": null,
+        "seekingFeedback": false
+      },
+      {
+        "id": "p5",
+        "title": "Readlog",
+        "description": "Track what you read across formats — books, articles, papers — in one minimal place.",
+        "url": null,
+        "type": "app",
+        "tags": ["reading", "productivity"],
+        "visibility": "public",
+        "status": "wip",
+        "thumbnail": null,
+        "seekingFeedback": true
+      },
+      {
+        "id": "p6",
+        "title": "Weekend Fonts",
+        "description": "A small shop of hand-crafted display fonts made over weekends.",
+        "url": "https://weekendfonts.co",
+        "type": "business",
+        "tags": ["design", "fonts"],
+        "visibility": "public",
+        "status": "active",
+        "thumbnail": null,
+        "seekingFeedback": false
+      }
+    ]
+  },
+  {
+    "id": "4",
+    "slug": "clara-west",
+    "name": "Clara West",
+    "avatar": null,
+    "bio": "Researcher and writer exploring the intersection of AI and organisational design.",
+    "location": "New York, US",
+    "social": {
+      "twitter": "clarawest",
+      "linkedin": "clara-west",
+      "website": "https://clarawest.com"
+    },
+    "tags": ["researcher", "writer"],
+    "visibility": "public",
+    "projects": [
+      {
+        "id": "p7",
+        "title": "Org Futures",
+        "description": "A newsletter and research project on how AI is reshaping how teams are structured.",
+        "url": "https://orgfutures.substack.com",
+        "type": "newsletter",
+        "tags": ["ai", "research", "future-of-work"],
+        "visibility": "public",
+        "status": "active",
+        "thumbnail": null,
+        "seekingFeedback": false
+      },
+      {
+        "id": "p8",
+        "title": "Signal vs Noise",
+        "description": "A curated weekly digest of the most interesting writing on technology and society.",
+        "url": null,
+        "type": "newsletter",
+        "tags": ["curation", "tech"],
+        "visibility": "public",
+        "status": "wip",
+        "thumbnail": null,
+        "seekingFeedback": true
+      }
+    ]
+  }
+]
