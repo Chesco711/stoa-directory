@@ -34,7 +34,7 @@ export default function AdminPage() {
         .from('members')
         .select('is_admin')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (!me?.is_admin) { router.replace('/dashboard'); return; }
 

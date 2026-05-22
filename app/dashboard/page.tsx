@@ -59,16 +59,16 @@ export default function DashboardPage() {
         .from('members')
         .select('*, projects(*), is_admin')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       // Fallback: look up by email and self-claim the row
       if (!data && user.email) {
         const { data: byEmail } = await supabase
           .from('members')
-          .select('*, projects(*)')
-          .eq('email', user.email)
+          .select('*, projects(*), is_admin')
+          .ilike('email', user.email)   // case-insensitive match
           .is('user_id', null)
-          .single();
+          .maybeSingle();               // returns null (not error) when 0 rows found
         if (byEmail) {
           // Claim the row — allowed by "Users can claim unlinked member row" RLS policy
           await supabase
