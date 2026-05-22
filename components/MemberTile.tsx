@@ -32,37 +32,40 @@ function Avatar({ name, avatar }: { name: string; avatar?: string | null }) {
 export default function MemberTile({ member }: Props) {
   const visibleProjects = member.projects
     .filter((p) => p.visibility === 'public')
-    .slice(0, 3);
+    .slice(0, 2); // cap at 2 so projects never push past the fixed tile height
 
   return (
-    <Link
-      href={`/members/${member.slug}`}
-      className="flex h-full flex-col rounded-xl border border-zinc-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
-    >
-      {/* Header */}
+    <div className="flex h-full flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
+
+      {/* Header — only the name links to the detail page */}
       <div className="flex items-center gap-2">
         <Avatar name={member.name} avatar={member.avatar} />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold text-zinc-900">{member.name}</p>
+          <Link
+            href={`/members/${member.slug}`}
+            className="block truncate text-sm font-semibold text-zinc-900 hover:underline"
+          >
+            {member.name}
+          </Link>
           {member.location && (
             <p className="truncate text-xs text-zinc-400">{member.location}</p>
           )}
         </div>
       </div>
 
-      {/* Bio — always 2 lines reserved so all tiles stay aligned */}
+      {/* Bio — always reserves 2 lines of space */}
       <p className="mt-2.5 line-clamp-2 min-h-[2.5rem] text-xs leading-5 text-zinc-500">
         {member.bio}
       </p>
 
-      {/* Projects pinned to bottom */}
+      {/* Projects — pinned to bottom */}
       {visibleProjects.length > 0 && (
-        <div className="mt-auto pt-3 flex flex-col gap-1.5">
+        <div className="mt-auto flex flex-col gap-1.5 pt-3">
           {visibleProjects.map((project) => (
             <ProjectCard key={project.id} project={project} compact />
           ))}
         </div>
       )}
-    </Link>
+    </div>
   );
 }
