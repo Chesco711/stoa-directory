@@ -48,6 +48,7 @@ export default function DashboardPage() {
   const [editingProject, setEditingProject] = useState<string | null>(null);
   const [newProject, setNewProject] = useState<Omit<Project, 'id'> | null>(null);
   const [lookupError, setLookupError] = useState<string | null>(null);
+  const [projectError, setProjectError] = useState<string | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -116,11 +117,13 @@ export default function DashboardPage() {
 
   async function addProject() {
     if (!member || !newProject) return;
-    const { data } = await supabase.from('projects').insert({
+    setProjectError(null);
+    const { data, error } = await supabase.from('projects').insert({
       ...newProject,
       url: newProject.url || null,     // empty string → null
       member_id: member.id,
     }).select().maybeSingle();
+    if (error) { setProjectError(error.message); return; }
     if (data) {
       setMember((m) => m ? { ...m, projects: [...m.projects, data] } : m);
       setNewProject(null);
@@ -230,12 +233,15 @@ export default function DashboardPage() {
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-semibold text-zinc-900">Projects</h2>
             <button
-              onClick={() => setNewProject(emptyProject())}
+              onClick={() => { setNewProject(emptyProject()); setProjectError(null); }}
               className="text-xs font-medium text-violet-600 hover:text-violet-800"
             >
               + Add project
             </button>
           </div>
+          {projectError && (
+            <p className="mb-3 rounded-lg bg-red-50 px-3 py-2 font-mono text-xs text-red-500">{projectError}</p>
+          )}
 
           <div className="flex flex-col gap-3">
             {member.projects.map((project) =>
