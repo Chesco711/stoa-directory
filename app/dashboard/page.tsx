@@ -24,6 +24,7 @@ interface MemberRow {
   bio: string;
   location: string | null;
   social: { twitter?: string; linkedin?: string; website?: string };
+  is_admin: boolean;
   projects: Project[];
 }
 
@@ -55,7 +56,7 @@ export default function DashboardPage() {
       // Primary lookup: by user_id (set by trigger on first sign-in)
       let { data } = await supabase
         .from('members')
-        .select('*, projects(*)')
+        .select('*, projects(*), is_admin')
         .eq('user_id', user.id)
         .single();
 
@@ -162,9 +163,16 @@ export default function DashboardPage() {
             <h1 className="mt-2 text-2xl font-bold text-zinc-900">My profile</h1>
             <p className="text-xs text-zinc-400">{user?.email}</p>
           </div>
-          <button onClick={signOut} className="text-xs text-zinc-400 hover:text-zinc-700 underline">
-            Sign out
-          </button>
+          <div className="flex items-center gap-4">
+            {member.is_admin && (
+              <Link href="/admin" className="text-xs font-medium text-violet-600 hover:text-violet-800">
+                Admin →
+              </Link>
+            )}
+            <button onClick={signOut} className="text-xs text-zinc-400 hover:text-zinc-700 underline">
+              Sign out
+            </button>
+          </div>
         </div>
 
         {/* Profile */}
