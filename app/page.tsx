@@ -46,7 +46,10 @@ export default function Home() {
         supabase.from('members').select('*, projects(*)').order('created_at'),
       ]);
       setLoggedIn(!!session);
-      setMembers((membersData ?? []).map(toMember));
+      const allMembers = (membersData ?? []).map(toMember);
+      // Hide members who haven't filled anything out yet
+      const filledMembers = allMembers.filter(m => m.bio.trim() || m.projects.length > 0);
+      setMembers(filledMembers);
       setLoading(false);
     }
     init();
