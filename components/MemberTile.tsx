@@ -32,7 +32,7 @@ function Avatar({ name, avatar }: { name: string; avatar?: string | null }) {
 export default function MemberTile({ member }: Props) {
   const visibleProjects = member.projects
     .filter((p) => p.visibility === 'public')
-    .slice(0, 2); // cap at 2 so projects never push past the fixed tile height
+    .slice(0, 3); // cap at 3 so projects never push past the fixed tile height
 
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md">

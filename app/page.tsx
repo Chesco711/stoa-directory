@@ -7,7 +7,9 @@ import MemberGrid from '@/components/MemberGrid';
 import Link from 'next/link';
 
 function toMember(row: Record<string, unknown>): Member {
-  const projects = ((row.projects as Record<string, unknown>[]) ?? []).map((p) => ({
+  const projects = ((row.projects as Record<string, unknown>[]) ?? [])
+    .sort((a, b) => ((a.position as number) ?? 0) - ((b.position as number) ?? 0))
+    .map((p) => ({
     id: String(p.id),
     title: String(p.title),
     description: String(p.description ?? ''),

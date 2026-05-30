@@ -15,6 +15,7 @@ interface Project {
   visibility: 'public' | 'community';
   seeking_feedback: boolean;
   feedback_prompt: string;
+  position: number;
   tags: string[];
 }
 
@@ -49,7 +50,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   technical: 'Technical',
 };
 
-const emptyProject = (): Omit<Project, 'id'> => ({
+const emptyProject = (position = 0): Omit<Project, 'id'> => ({
   title: '',
   description: '',
   url: '',
@@ -57,6 +58,7 @@ const emptyProject = (): Omit<Project, 'id'> => ({
   visibility: 'community',
   seeking_feedback: false,
   feedback_prompt: '',
+  position,
   tags: [],
 });
 
@@ -170,6 +172,7 @@ export default function DashboardPage() {
       visibility:       newProject.visibility,
       seeking_feedback: newProject.seeking_feedback,
       feedback_prompt:  newProject.feedback_prompt || null,
+      position:         newProject.position,
       tags:             newProject.tags,
     }).select().maybeSingle();
     if (error) { setProjectError(error.message); return; }
@@ -177,6 +180,29 @@ export default function DashboardPage() {
       setMember((m) => m ? { ...m, projects: [...m.projects, data] } : m);
       setNewProject(null);
     }
+  }
+
+  async function moveProject(projectId: string, direction: 'up' | 'down') {
+    if (!member) return;
+    const sorted = [...member.projects].sort((a, b) => a.position - b.position);
+    const idx = sorted.findIndex(p => p.id === projectId);
+    if (direction === 'up' && idx === 0) return;
+    if (direction === 'down' && idx === sorted.length - 1) return;
+    const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
+    const curr = sorted[idx];
+    const swap = sorted[swapIdx];
+    await Promise.all([
+      supabase.from('projects').update({ position: swap.position }).eq('id', curr.id),
+      supabase.from('projects').update({ position: curr.position }).eq('id', swap.id),
+    ]);
+    setMember(m => m ? {
+      ...m,
+      projects: m.projects.map(p => {
+        if (p.id === curr.id) return { ...p, position: swap.position };
+        if (p.id === swap.id) return { ...p, position: curr.position };
+        return p;
+      }),
+    } : m);
   }
 
   async function deleteProject(id: string) {
@@ -355,9 +381,18 @@ export default function DashboardPage() {
         {/* Projects */}
         <section className="mt-6 rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-semibold text-zinc-900">Projects</h2>
+            <div>
+              <h2 className="font-semibold text-zinc-900">Projects</h2>
+              <p className="mt-0.5 text-xs text-zinc-400">First 3 public projects appear on your tile. Drag to reorder.</p>
+            </div>
             <button
-              onClick={() => { setNewProject(emptyProject()); setProjectError(null); }}
+              onClick={() => {
+                const nextPos = member.projects.length > 0
+                  ? Math.max(...member.projects.map(p => p.position)) + 1
+                  : 0;
+                setNewProject(emptyProject(nextPos));
+                setProjectError(null);
+              }}
               className="text-xs font-medium text-violet-600 hover:text-violet-800"
             >
               + Add project
@@ -368,7 +403,7 @@ export default function DashboardPage() {
           )}
 
           <div className="flex flex-col gap-3">
-            {member.projects.map((project) =>
+            {[...member.projects].sort((a, b) => a.position - b.position).map((project, idx, sorted) =>
               editingProject === project.id ? (
                 <ProjectForm
                   key={project.id}
@@ -378,17 +413,34 @@ export default function DashboardPage() {
                   onCancel={() => setEditingProject(null)}
                 />
               ) : (
-                <div key={project.id} className="flex items-center justify-between rounded-lg border border-zinc-100 bg-zinc-50 px-3 py-2.5">
-                  <div>
-                    <p className="text-sm font-medium text-zinc-800">{project.title}</p>
-                    <p className="text-xs text-zinc-400">
-                      {project.visibility === 'public' ? 'Public' : 'Community only'} · {project.status}
-                      {project.seeking_feedback && ' · seeking feedback'}
-                    </p>
+                <div key={project.id} className="flex items-center gap-2 rounded-lg border border-zinc-100 bg-zinc-50 px-3 py-2.5">
+                  {/* Reorder buttons */}
+                  <div className="flex flex-col">
+                    <button
+                      onClick={() => moveProject(project.id, 'up')}
+                      disabled={idx === 0}
+                      className="text-zinc-300 hover:text-zinc-500 disabled:opacity-0 leading-none"
+                      title="Move up"
+                    >▲</button>
+                    <button
+                      onClick={() => moveProject(project.id, 'down')}
+                      disabled={idx === sorted.length - 1}
+                      className="text-zinc-300 hover:text-zinc-500 disabled:opacity-0 leading-none"
+                      title="Move down"
+                    >▼</button>
                   </div>
-                  <div className="flex gap-2">
-                    <button onClick={() => setEditingProject(project.id)} className="text-xs text-zinc-400 hover:text-zinc-700">Edit</button>
-                    <button onClick={() => deleteProject(project.id)} className="text-xs text-red-400 hover:text-red-600">Delete</button>
+                  <div className="flex flex-1 items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-zinc-800">{project.title}</p>
+                      <p className="text-xs text-zinc-400">
+                        {project.visibility === 'public' ? 'Public' : 'Community only'} · {project.status}
+                        {project.seeking_feedback && ' · seeking feedback'}
+                      </p>
+                    </div>
+                    <div className="flex gap-2">
+                      <button onClick={() => setEditingProject(project.id)} className="text-xs text-zinc-400 hover:text-zinc-700">Edit</button>
+                      <button onClick={() => deleteProject(project.id)} className="text-xs text-red-400 hover:text-red-600">Delete</button>
+                    </div>
                   </div>
                 </div>
               )
