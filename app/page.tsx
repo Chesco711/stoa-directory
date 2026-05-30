@@ -63,7 +63,7 @@ export default function Home() {
     async function init() {
       const [{ data: { session } }, { data: membersData }] = await Promise.all([
         supabase.auth.getSession(),
-        supabase.from('members').select('*, projects(*)').order('created_at'),
+        supabase.from('members').select('*, projects(*)').order('listed_at', { ascending: false }).order('name', { ascending: true }),
       ]);
       const isLoggedIn = !!session;
       setLoggedIn(isLoggedIn);
