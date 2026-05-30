@@ -60,7 +60,7 @@ export default function MemberTile({ member }: Props) {
 
       {/* Projects — pinned to bottom */}
       {visibleProjects.length > 0 && (
-        <div className="mt-auto flex flex-col gap-1.5 pt-3">
+        <div className="mt-3 flex flex-col gap-1.5">
           {visibleProjects.map((project) => (
             <ProjectCard key={project.id} project={project} compact />
           ))}
