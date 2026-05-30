@@ -7,6 +7,13 @@ const statusStyles: Record<string, string> = {
   wip:     'bg-amber-50 text-amber-700',
 };
 
+// Compact dot colours — used in tile cards where space is tight
+const statusDot: Record<string, string> = {
+  active:  'bg-emerald-400',
+  shipped: 'bg-blue-400',
+  wip:     'bg-amber-400',
+};
+
 const statusLabel: Record<string, string> = {
   active: 'Active', shipped: 'Shipped', wip: 'WIP',
 };
@@ -27,21 +34,23 @@ export default function ProjectCard({ project, compact = false }: Props) {
         >
           {project.title}
         </Link>
-        <div className="ml-2 flex shrink-0 items-center gap-1">
+        <div className="ml-2 flex shrink-0 items-center gap-1.5">
           {project.seekingFeedback && (
             <span className="rounded-full bg-violet-50 px-1.5 py-0.5 text-xs font-medium text-violet-600">
               Feedback
             </span>
           )}
-          <span className={`rounded-full px-1.5 py-0.5 text-xs font-medium ${statusStyles[project.status]}`}>
-            {statusLabel[project.status]}
-          </span>
+          {/* Status as a coloured dot to save space — hover shows the label */}
+          <span
+            className={`h-2 w-2 rounded-full ${statusDot[project.status]}`}
+            title={statusLabel[project.status]}
+          />
           {project.url && (
             <a
               href={project.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="ml-0.5 flex h-5 w-5 items-center justify-center rounded text-zinc-300 transition-colors hover:bg-zinc-200 hover:text-zinc-600"
+              className="flex h-5 w-5 items-center justify-center rounded text-zinc-300 transition-colors hover:bg-zinc-200 hover:text-zinc-600"
               title={`Open ${project.title}`}
             >
               ↗
