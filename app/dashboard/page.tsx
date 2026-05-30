@@ -165,13 +165,8 @@ export default function DashboardPage() {
       .from('members')
       .update({ bio: member.bio, location: member.location, social: member.social, visibility: member.visibility })
       .eq('id', member.id);
-    // Bump listed_at only if the cooldown (7 days) has passed
-    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-    await supabase
-      .from('members')
-      .update({ listed_at: new Date().toISOString() })
-      .eq('id', member.id)
-      .lt('listed_at', sevenDaysAgo);
+    // Bump listed_at via security-definer RPC (enforces 7-day cooldown in the DB)
+    await supabase.rpc('bump_listed_at');
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
@@ -214,13 +209,8 @@ export default function DashboardPage() {
     if (data) {
       setMember((m) => m ? { ...m, projects: [...m.projects, data] } : m);
       setNewProject(null);
-      // Adding a project is always meaningful — bump listed_at with cooldown
-      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-      await supabase
-        .from('members')
-        .update({ listed_at: new Date().toISOString() })
-        .eq('id', member.id)
-        .lt('listed_at', sevenDaysAgo);
+      // Adding a project is always meaningful — bump listed_at via security-definer RPC
+      await supabase.rpc('bump_listed_at');
     }
   }
 
