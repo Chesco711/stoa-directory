@@ -1,9 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Member } from '@/lib/types';
 import MemberGrid from '@/components/MemberGrid';
+import FilterBar from '@/components/FilterBar';
+import {
+  Filters,
+  emptyFilters,
+  filterMembers,
+  isFilterActive,
+} from '@/lib/filterMembers';
 import Link from 'next/link';
 
 function toMember(row: Record<string, unknown>): Member {
@@ -58,6 +65,13 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
   const [feedbackProjects, setFeedbackProjects] = useState<FeedbackProject[]>([]);
+  const [filters, setFilters] = useState<Filters>(emptyFilters);
+
+  const filteredMembers = useMemo(
+    () => filterMembers(members, filters),
+    [members, filters],
+  );
+  const filtersActive = isFilterActive(filters);
 
   useEffect(() => {
     async function init() {
@@ -116,7 +130,34 @@ export default function Home() {
             ))}
           </div>
         ) : (
-          <MemberGrid members={members} />
+          <>
+            {members.length > 0 && (
+              <FilterBar
+                members={members}
+                filters={filters}
+                onChange={setFilters}
+                onClear={() => setFilters(emptyFilters)}
+                total={members.length}
+                resultCount={filteredMembers.length}
+              />
+            )}
+            {filtersActive && filteredMembers.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-zinc-200 bg-zinc-50/50 py-20 text-center">
+                <p className="text-sm font-medium text-zinc-600">
+                  No members match these filters.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setFilters(emptyFilters)}
+                  className="mt-2 text-sm font-medium text-violet-600 hover:text-violet-700 hover:underline"
+                >
+                  Clear filters
+                </button>
+              </div>
+            ) : (
+              <MemberGrid members={filteredMembers} />
+            )}
+          </>
         )}
 
         {/* Seeking feedback — community-only section */}
