@@ -59,8 +59,25 @@ export default function ProjectCard({ project, compact = false }: Props) {
           </Link>
         </div>
 
-        {/* External link */}
-        {project.url && (
+        {/* Feedback badge + external link */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
+          {project.seekingFeedback && (
+            <Link
+              href={`/projects/${project.id}#feedback`}
+              style={{
+                fontFamily: ff, fontSize: 10, fontWeight: 500,
+                color: 'var(--gold)',
+                border: '1px solid var(--gold)',
+                borderRadius: 3, padding: '2px 6px',
+                letterSpacing: '.4px',
+                textDecoration: 'none',
+                flexShrink: 0,
+              }}
+            >
+              Feedback
+            </Link>
+          )}
+          {project.url && (
           <a
             href={project.url}
             target="_blank"
@@ -75,7 +92,8 @@ export default function ProjectCard({ project, compact = false }: Props) {
           >
             ↗
           </a>
-        )}
+          )}
+        </div>
       </div>
     );
   }
