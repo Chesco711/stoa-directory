@@ -39,10 +39,13 @@ export default function ProjectCard({ project, compact = false }: Props) {
       }}>
         {/* Status dot + title */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 5, minWidth: 0, flex: 1 }}>
-          <span style={{
-            width: 5, height: 5, borderRadius: '50%',
-            background: dotColor, flexShrink: 0,
-          }} />
+          <Link
+            href={project.seekingFeedback ? `/projects/${project.id}#feedback` : `/projects/${project.id}`}
+            style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}
+            title={project.seekingFeedback ? 'Give feedback' : undefined}
+          >
+            <span style={{ width: 5, height: 5, borderRadius: '50%', background: dotColor, display: 'block' }} />
+          </Link>
           <Link
             href={`/projects/${project.id}`}
             style={{
@@ -104,16 +107,20 @@ export default function ProjectCard({ project, compact = false }: Props) {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
           {project.seekingFeedback && (
-            <span style={{
-              fontFamily: ff, fontSize: 10, fontWeight: 500,
-              color: 'var(--gold)',
-              background: 'none',
-              border: '1px solid var(--gold)',
-              borderRadius: 3, padding: '2px 7px',
-              letterSpacing: '.4px',
-            }}>
+            <Link
+              href={`/projects/${project.id}#feedback`}
+              style={{
+                fontFamily: ff, fontSize: 10, fontWeight: 500,
+                color: 'var(--gold)',
+                background: 'none',
+                border: '1px solid var(--gold)',
+                borderRadius: 3, padding: '2px 7px',
+                letterSpacing: '.4px',
+                textDecoration: 'none',
+              }}
+            >
               Feedback
-            </span>
+            </Link>
           )}
           <span style={{
             fontFamily: ff, fontSize: 10,
