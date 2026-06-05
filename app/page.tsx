@@ -135,6 +135,7 @@ export default function Home() {
   // ── Member view filters (FilterBar) ──
   const [filters, setFilters]           = useState<Filters>(emptyFilters);
   const [sort, setSort]                 = useState<SortKey>(defaultSort);
+  const [filtersOpen, setFiltersOpen]   = useState(false);
 
   function updateViewMode(mode: ViewMode) {
     setViewMode(mode);
@@ -248,7 +249,7 @@ export default function Home() {
         </div>
 
         {/* Content */}
-        <div className="relative max-w-[1020px] mx-auto">
+        <div className="relative max-w-[1280px] mx-auto">
           <div className="flex justify-between items-start gap-4">
             <div>
               <div className="flex items-center gap-[10px] mb-2">
@@ -280,7 +281,7 @@ export default function Home() {
       </header>
 
       {/* ══ Body ═════════════════════════════════════════════════════ */}
-      <div className="max-w-[1020px] mx-auto px-10 pt-7 pb-14">
+      <div className="max-w-[1280px] mx-auto px-10 pt-7 pb-14">
 
         {/* Section label + view toggle */}
         <div className="flex items-center gap-[10px] mb-5">
@@ -360,18 +361,45 @@ export default function Home() {
           <ProjectGrid items={filteredProjectItems} />
         ) : (
           <>
-            {members.length > 0 && (
+            {/* Search & filter toggle */}
+            {!loading && members.length > 0 && (
+              <div className="flex items-center justify-between mb-4">
+                <span className="font-sans text-[12px] text-muted">
+                  {filtersActive
+                    ? `Showing ${filteredMembers.length} of ${members.length} members`
+                    : `${members.length} members`}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setFiltersOpen(o => !o)}
+                  className={`font-sans text-[11px] font-medium flex items-center gap-1.5 px-3 py-1.5 rounded border transition-colors ${
+                    filtersOpen || filtersActive
+                      ? 'border-gold text-gold bg-transparent'
+                      : 'border-card text-muted bg-transparent hover:border-gold hover:text-gold'
+                  }`}
+                >
+                  {filtersOpen ? '✕ Hide filters' : '⌕ Search & filter'}
+                  {!filtersOpen && filtersActive && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-gold" />
+                  )}
+                </button>
+              </div>
+            )}
+
+            {/* Collapsible FilterBar */}
+            {filtersOpen && (
               <FilterBar
                 members={members}
                 filters={filters}
                 onChange={setFilters}
                 sort={sort}
                 onSortChange={setSort}
-                onClear={() => setFilters(emptyFilters)}
+                onClear={() => { setFilters(emptyFilters); }}
                 total={members.length}
                 resultCount={filteredMembers.length}
               />
             )}
+
             {filtersActive && filteredMembers.length === 0 ? (
               <div className="rounded-[6px] border border-dashed border-section py-20 text-center">
                 <p className="font-sans text-[13px] text-secondary">
