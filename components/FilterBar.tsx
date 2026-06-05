@@ -46,20 +46,22 @@ export default function FilterBar({
 
   return (
     <div className="mb-8 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
-      {/* Search + needs-feedback toggle */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <div className="relative flex-1">
-          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400">
-            ⌕
-          </span>
-          <input
-            type="text"
-            value={filters.search}
-            onChange={(e) => onChange({ ...filters, search: e.target.value })}
-            placeholder="Search members or projects…"
-            className="w-full rounded-lg border border-zinc-200 bg-zinc-50 py-2 pl-9 pr-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-violet-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-violet-100"
-          />
-        </div>
+      {/* Search */}
+      <div className="relative">
+        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400">
+          ⌕
+        </span>
+        <input
+          type="text"
+          value={filters.search}
+          onChange={(e) => onChange({ ...filters, search: e.target.value })}
+          placeholder="Search members or projects…"
+          className="w-full rounded-lg border border-zinc-200 bg-zinc-50 py-2 pl-9 pr-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-violet-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-violet-100"
+        />
+      </div>
+
+      {/* Needs-feedback toggle — its own line under the search */}
+      <div className="mt-3">
         <button
           type="button"
           onClick={() =>
@@ -76,8 +78,8 @@ export default function FilterBar({
         </button>
       </div>
 
-      {/* Project-type pills — built from the loaded data */}
-      {types.length > 0 && (
+      {/* Project-type pills — only when there's a real choice (2+ types) */}
+      {types.length > 1 && (
         <div className="mt-3 flex flex-wrap items-center gap-1.5">
           <span className="mr-1 text-xs font-medium text-zinc-400">Type</span>
           <button
